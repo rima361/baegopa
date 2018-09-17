@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="image">
+
+    <insert id="save" parameterType="com.spring.hungry.model.Image">
+        INSERT INTO NB60343_IMAGE (image_id, restaurant_id, img_url, creation_date)
+        VALUES (NB60343_IMAGE_S.nextval, #{restaurantId}, #{imgUrl}, SYSDATE)
+    </insert>
+</mapper>

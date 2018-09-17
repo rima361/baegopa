@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="menu">
+    <resultMap id="findAllBy" type="com.spring.hungry.model.Menu">
+        <id property="menuId" 					column="menu_id" />
+        <result property="restaurantId" 		column="restaurant_id" />
+        <result property="price" 				column="price"/>
+        <result property="menuName"				column="menu_name"/>
+    </resultMap>
+
+    <select id="findAllByRestId" parameterType="Long" resultMap="findAllBy">
+        SELECT menu_id
+              ,restaurant_id
+              ,price
+              ,menu_name
+        FROM NB60343_MENU m
+        WHERE m.restaurant_id = #{restaurantId}
+        AND m.use_yn = 'Y'
+    </select>
+    
+</mapper>

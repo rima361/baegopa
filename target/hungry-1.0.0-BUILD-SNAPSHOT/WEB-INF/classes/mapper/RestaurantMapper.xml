@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="restaurant">
+	<insert id="save" parameterType="com.spring.hungry.model.Restaurant">
+		INSERT INTO NB60343_RESTAURANT (restaurant_id, category_id, title, description, tel, address, delivery_yn, use_yn, creation_date, created_by)
+			SELECT nb60343_restaurant_s.nextval, #{categoryId}, #{title}, #{description}, #{tel}, #{address}, #{deliveryYn}, #{useYn}, SYSDATE, #{createdBy}
+			FROM DUAL A
+			WHERE NOT EXISTS (
+				SELECT 0
+				FROM NB60343_RESTAURANT
+				WHERE title = #{title}
+			)
+	</insert>
+
+	<resultMap id="findById" type="com.spring.hungry.model.Restaurant">
+		<id property="restaurant_id" 	column="restaurantId" />
+		<result property="category_id" 	column="categoryId" />
+		<result property="name" 		column="categoryName" />
+		<result property="title" 		column="title" />
+		<result property="description" 	column="description" />
+		<result property="tel" 			column="tel" />
+		<result property="address" 		column="address" />
+		<result property="delivery_yn" 	column="deliverYn" />
+		<result property="imgUrl"       column="img_url"/>
+	</resultMap>
+
+	<select id="findOne" resultMap="findById">
+		SELECT r.restaurant_id
+			, c.name
+			 , r.category_id
+			 , r.title
+			 , r.description
+			 , r.tel
+			 , r.address
+			 , r.delivery_yn
+			 , img.img_url
+		FROM NB60343_RESTAURANT r
+		LEFT JOIN NB60343_CATEGORY c ON c.category_id = r.category_id AND c.use_yn = 'Y'
+		LEFT JOIN NB60343_IMAGE img on img.restaurant_id = r.restaurant_id
+		WHERE r.restaurant_id = #{restaurantId}
+	</select>
+
+	<sql id="getHashTagList">
+		SELECT 
+			t.restaurant_id 
+		   ,tm.name
+		FROM NB60343_HASH_TAG_MAPPING t
+		INNER JOIN NB60343_HASH_TAG tm ON tm.hash_tag_id = t.hash_tag_id AND tm.use_yn = 'Y'
+	</sql>
+	
+	<sql id="getRating">
+		SELECT 
+			 restaurant_id
+		    ,AVG(rating) AS rating
+		FROM NB60343_REVIEW
+		WHERE use_yn = 'Y'
+		GROUP BY restaurant_id
+	</sql>
+
+	<select id="srchList" parameterType="com.spring.hungry.model.value.PagingRequest" resultType="com.spring.hungry.model.Restaurant">
+		SELECT * FROM
+		(
+		SELECT distinct *
+			FROM (
+				SELECT distinct ROW_NUMBER() OVER (ORDER BY d.rating DESC) rnum, d.*
+				FROM (
+					SELECT
+					distinct r.restaurant_id as restaurantId
+					, r.category_id as categoryId
+					, r.title
+					, r.description
+					, r.tel
+					, r.address
+					, r.delivery_yn as deliveryYn
+					, NVL(v.rating, 0) as rating
+					, img.img_url as imgUrl
+					FROM NB60343_RESTAURANT r
+				<if test="query != null and query != ''">
+					LEFT JOIN (
+					<include refid="getHashTagList" />
+					) h ON h.restaurant_id = r.restaurant_id
+				</if>
+					LEFT JOIN NB60343_IMAGE img on img.restaurant_id = r.restaurant_id
+					LEFT JOIN (
+					<include refid="getRating" />
+				) v ON v.restaurant_id = r.restaurant_id
+
+				WHERE r.use_yn = 'Y'
+				<if test="query != null and query != ''">
+					AND (r.title LIKE '%'||#{query}||'%'
+					OR h.name LIKE '%'||#{query}||'%'
+					)
+				</if>
+				<if test="categoryId != null and categoryId > 0">
+					AND r.category_id = #{categoryId}
+				</if>
+				<if test="delivery != null and delivery != '' ">
+					AND r.delivery_yn = 'Y'
+				</if>
+				) d
+			ORDER BY d.rating DESC
+		) pagetable
+		  <![CDATA[
+	   WHERE rnum <= #{rowEnd}
+	   ORDER BY pagetable.rating DESC
+	  )
+	  WHERE rnum >= #{rowStart}
+	  ]]>
+	</select>
+</mapper>

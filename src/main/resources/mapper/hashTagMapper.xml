@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hashTag">
+    
+    <resultMap id="findAllHashTagMappingBy" type="com.spring.hungry.model.HashTagMapping">
+        <id property="hashTagMappingId" 	column="hash_tag_mapping_id" />
+        <result property="hashTagId"		column="hash_tag_id" />
+        <result property="restaurantId"		column="restaurant_id"/>
+        <result property="hashTagName" 			column="name"/>
+    </resultMap>
+
+    <select id="findAllHashTagMapping" resultMap="findAllHashTagMappingBy">
+        SELECT tm.hash_tag_mapping_id
+        	  ,tm.hash_tag_id
+        	  ,tm.restaurant_id
+        	  ,t.name
+        FROM NB60343_HASH_TAG t
+        INNER JOIN NB60343_HASH_TAG_MAPPING tm ON tm.hash_tag_id = t.hash_tag_id
+        WHERE tm.restaurant_id = #{restaurantId}
+        AND tm.use_yn = 'Y'
+    </select>
+</mapper>

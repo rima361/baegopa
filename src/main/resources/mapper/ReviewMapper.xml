@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="review">
+	<insert id="save" parameterType="com.spring.hungry.model.Review">
+		INSERT INTO NB60343_REVIEW (review_id, restaurant_id, user_id, contents, rating, use_yn, creation_date)
+		VALUES (#{reviewId}, #{restaurantId}, #{userId}, #{contents}, #{rating}, #{useYn}, #{creationDate})
+	</insert>
+	
+	<select id="seq" resultType="Long">
+		SELECT NB60343_REVIEW_S.nextval from dual
+	</select>
+
+	<select id="countBy" resultType="Long">
+		SELECT COUNT(*)
+		FROM NB60343_REVIEW
+		WHERE restaurant_id = #{restaurantId}
+			AND user_id = #{userId}
+</select>
+ 
+	<select id="reviewList" resultType="com.spring.hungry.model.Review">
+		SELECT 
+			   r.review_id AS reviewId
+			 , r.restaurant_id AS restaurantId
+			 , r.user_id AS userId
+			 , u.name AS name
+			 , r.use_yn AS useYn
+			 , r.contents AS contents
+			 , r.rating AS rating
+			 , r.use_yn AS useYn
+			 , r.creation_date AS creationDate
+		FROM NB60343_REVIEW r
+		INNER JOIN NB60343_USER u ON u.user_id = r.user_id 
+		WHERE r.restaurant_id = #{restaurantId}
+		ORDER BY r.review_id DESC
+	</select>
+	
+	<update id="update" parameterType="com.spring.hungry.model.Review">
+		UPDATE NB60343_REVIEW r
+		SET 
+		   r.contents = #{contents}
+		 , r.rating = #{rating}
+	     , r.last_update_date = SYSDATE
+		WHERE r.review_id = #{reviewId}
+	</update>
+	
+	<delete id="delete">
+		DELETE 
+		FROM NB60343_REVIEW r
+		WHERE r.review_id = #{reviewId}
+	</delete>
+	
+	<update id="hide" parameterType="com.spring.hungry.model.Review">
+	  UPDATE NB60343_REVIEW r
+	  SET r.use_yn = 'N'
+	  WHERE r.review_id = #{reviewId}
+	 </update>
+
+	<update id="show" parameterType="com.spring.hungry.model.Review">
+		UPDATE NB60343_REVIEW r
+		SET r.use_yn = 'Y'
+		WHERE r.review_id = #{reviewId}
+	</update>
+</mapper>

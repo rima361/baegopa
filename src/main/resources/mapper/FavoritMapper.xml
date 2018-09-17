@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="favorite">
+    
+    <select id="findAllByUserId" resultType="com.spring.hungry.model.Favorite">
+        SELECT
+             f.favorite_id AS favoriteId
+            ,f.restaurant_id AS restaurantId
+            ,r.title
+            ,r.address
+            ,img.img_url as imgUrl
+        FROM NB60343_FAVORITE f
+        INNER JOIN NB60343_restaurant r ON r.restaurant_id = f.restaurant_id
+        LEFT JOIN NB60343_IMAGE img on img.restaurant_id = r.restaurant_id
+        WHERE f.user_id = #{userId}
+    </select>
+
+    <select id="seq" resultType="Long">
+        SELECT NB60343_FAVORITE_S.nextval from dual
+    </select>
+
+    <select id="findByUserIdAndRestaurantId" resultType="com.spring.hungry.model.Favorite">
+        SELECT
+        	f.favorite_id AS favoriteId
+        FROM NB60343_FAVORITE f
+        WHERE f.user_id = #{userId} AND f.restaurant_id = #{restaurantId}
+    </select>
+
+    <insert id="insert" parameterType="com.spring.hungry.model.Favorite">
+        INSERT INTO NB60343_FAVORITE (favorite_id, restaurant_id, user_id, use_yn, creation_date)
+        VALUES (#{favoriteId}, #{restaurantId}, #{userId}, 'Y', SYSDATE)
+    </insert>
+    
+    <delete id="delete" parameterType="long">
+        DELETE
+		FROM NB60343_FAVORITE
+		WHERE favorite_id = #{favoriteId}
+    </delete>
+</mapper>
