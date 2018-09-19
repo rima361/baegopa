@@ -31,13 +31,13 @@ public class RestaurantService {
 	@Autowired private RestaurantDAO restaurantDAO;
 	@Autowired private MenuDAO menuDAO;
 	@Autowired private HashTagDAO hashTagDAO;
-	public static Map<Long, Restaurant> cache = new HashMap<Long, Restaurant>();
+/*	public static Map<Long, Restaurant> cache = new HashMap<Long, Restaurant>();*/
 
-	@PostConstruct
+/*	@PostConstruct
 	public void initail() {
         CompletableFuture.supplyAsync(this::caching);
 	}
-
+*/
 	public void callNaverLocalAPI() throws IOException {
 		NaverLocalInfoResponse response = naverLocalService.get();
 		List<NaverLocalInfoItem> naverLocalItem = response.getItems();
@@ -57,18 +57,19 @@ public class RestaurantService {
 	public List<Restaurant> list(PagingRequest pagingRequest) {
 		List<Restaurant> list = restaurantDAO.list(pagingRequest);
 		for (Restaurant restaurant : list) {
-			Restaurant cac = cache.get(restaurant.getRestaurantId());
-			if(cac == null) {
+			/*Restaurant cac = cache.get(restaurant.getRestaurantId());*/
+			/*if(cac == null) {
 				restaurant.setHashTagList(hashTagDAO.findAllHashTagMapping(restaurant.getRestaurantId()));
 				cache.put(restaurant.getRestaurantId(), restaurant);
 			} else {
 				restaurant.setHashTagList(cac.getHashTagList());
-			}
+			}*/
+			restaurant.setHashTagList(hashTagDAO.findAllHashTagMapping(restaurant.getRestaurantId()));
 		}
 		return list;
 	}
 
-	public List<Restaurant> caching() {
+/*	public List<Restaurant> caching() {
 		PagingRequest request = new PagingRequest();
 		request.setPageSize(100);
 		return restaurantDAO.list(request).stream().peek( restaurant -> {
@@ -78,16 +79,16 @@ public class RestaurantService {
 			cache.put(restaurant.getRestaurantId(), restaurant);
 		}).collect(Collectors.toList());
 	}
-
+*/
 	public Restaurant findById(long restaurantId) {
-        Restaurant cacheRest = cache.get(restaurantId);
+/*        Restaurant cacheRest = cache.get(restaurantId);
         if(cacheRest != null)
             return cacheRest;
-
+*/
 		Restaurant restaurant = restaurantDAO.findById(restaurantId);
 		restaurant.setMenuList(menuDAO.findAllByRestaurantId(restaurantId));
 		restaurant.setHashTagList(hashTagDAO.findAllHashTagMapping(restaurantId));
-		cache.put(restaurantId, restaurant);
+		/*cache.put(restaurantId, restaurant);*/
 		return restaurant;
 	}
 	

@@ -13,6 +13,7 @@
         INNER JOIN NB60343_restaurant r ON r.restaurant_id = f.restaurant_id
         LEFT JOIN NB60343_IMAGE img on img.restaurant_id = r.restaurant_id
         WHERE f.user_id = #{userId}
+        ORDER BY f.creation_date
     </select>
 
     <select id="seq" resultType="Long">

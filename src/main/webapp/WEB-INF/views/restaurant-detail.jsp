@@ -25,6 +25,7 @@
         </c:otherwise>
 
     </c:choose>
+   
     <div style="padding-left: 20px;text-align: center;">
         <span style="font-weight: 700; font-size: 32px;">${rest.title}
         <span style="font-weight: 400; font-size: 22px; color: #73818f;"> <c:choose>
@@ -36,14 +37,14 @@
         <hr>
     </div>
        <div style="text-align: center;">
-        	<img src="${rest.imgUrl}" style="width: 900px;"> 
+        	<img src="${rest.imgUrl}" style="width: 900px; height: 800px;"> 
         </div>
     <div style="height: 60px;"></div>
     <div style="padding-left: 20px;  line-height: 40px;">
         <div style="font-size:20px;"><i class="fa fa-map-marker" aria-hidden="true"></i><span style="margin-left:10px; font-weight: 500">${rest.address}</span></div>
           <c:choose>
             <c:when test="${rest.description eq null}">
-                맛있는 음식점 입니당.
+                맛있는 음식점 입니다.
             </c:when>
             <c:otherwise>
                 ${rest.description}

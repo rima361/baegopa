@@ -25,7 +25,7 @@ public class UserController {
     public String loginAuth(HttpSession session, @ModelAttribute User user) {
         User loginUser = userService.login(user);
         if(loginUser != null) {
-            log.info(loginUser.toString());
+            //log.info(loginUser.toString());
             session.setAttribute("user", loginUser);
             return "redirect:/";
         } else {

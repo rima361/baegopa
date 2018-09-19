@@ -25,9 +25,7 @@ public class NaverLocalService {
 	
 	@PostConstruct
 	public void initialize() {
-		OkHttpClient client = new OkHttpClient.Builder()
-		.addInterceptor(new Interceptor() {
-	
+		OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
 			@Override
 			public Response intercept(Chain chain) throws IOException {
 				//TODO Auto-generated method stub
@@ -47,7 +45,7 @@ public class NaverLocalService {
 	}
 	
 	public NaverLocalInfoResponse get() throws IOException {
-		return naverLocalDAO.getInfos("ÆÇ±³¿ªÀ½½ÄÁ¡", 100).execute().body();
+		return naverLocalDAO.getInfos("ï¿½Ç±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", 100).execute().body();
 		
 	}
 }

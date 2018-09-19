@@ -24,16 +24,16 @@
 		<result property="imgUrl"       column="img_url"/>
 	</resultMap>
 
-	<select id="findOne" resultMap="findById">
-		SELECT r.restaurant_id
-			, c.name
-			 , r.category_id
+	<select id="findOne" resultType="com.spring.hungry.model.Restaurant">
+		SELECT r.restaurant_id AS restaurantId
+			 , c.name		   AS categoryName
+			 , r.category_id   AS categoryId
 			 , r.title
 			 , r.description
 			 , r.tel
 			 , r.address
-			 , r.delivery_yn
-			 , img.img_url
+			 , r.delivery_yn   AS deliveryYn
+			 , img.img_url	   AS imgUrl
 		FROM NB60343_RESTAURANT r
 		LEFT JOIN NB60343_CATEGORY c ON c.category_id = r.category_id AND c.use_yn = 'Y'
 		LEFT JOIN NB60343_IMAGE img on img.restaurant_id = r.restaurant_id

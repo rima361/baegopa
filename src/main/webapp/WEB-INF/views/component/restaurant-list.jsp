@@ -52,7 +52,7 @@
         query = '${query}'
         </c:if>
         <c:if test="${not empty categoryId}">
-        console.log("ddd")
+        //console.log("ddd")
         categoryId = '${categoryId}'
         </c:if>
         <c:if test="${not empty delivery}">

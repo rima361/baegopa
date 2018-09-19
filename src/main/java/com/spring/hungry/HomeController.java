@@ -36,12 +36,13 @@ public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model, HttpSession session, PagingRequest request) {
 		User user = (User) session.getAttribute("user");
+		//RestaurantService.cache = new HashMap<>();
 		model.addAttribute("query", request.getQuery());
 		model.addAttribute("categoryId", request.getCategoryId());
 		model.addAttribute("favList", favoriteService.findAllByUserId(user.getId()));
 		return "home";
 	}
-
+	
 	@ResponseBody
 	@RequestMapping(value = "/api/test", method = RequestMethod.GET)
 	public String apiTest() throws IOException {
@@ -85,11 +86,11 @@ public class HomeController {
 		imageService.insertImageList(imageList);
 		return imageList.toString();
 	}
-
+/*
 	@RequestMapping("/cache/clear")
 	public String cacheClear() {
 		RestaurantService.cache = new HashMap<>();
 		restaurantService.caching();
-		return "success";
-	}
+		return "/";
+	}*/
 }
